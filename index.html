@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chatimgrafika - Premium Printing Service</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            light: '#FDE68A',
+                            DEFAULT: '#D4AF37',
+                            dark: '#B49020',
+                        },
+                        dark: {
+                            bg: '#0A0A0A',
+                            card: '#141414',
+                            border: '#262626'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                        'spin-slow': 'spin 2s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(to right, #D4AF37, #FDE68A, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        .section-tab { display: none; }
+        .section-tab.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+    </style>
+</head>
+<body class="bg-dark-bg text-gray-300 font-sans antialiased min-h-screen flex flex-col overflow-x-hidden pb-16 md:pb-0">
+
+    <!-- Top Navbar -->
+    <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center md:justify-between items-center h-16 md:h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="switchTab('beranda')">
+                    <img class="h-10 md:h-12 w-auto object-contain rounded-md border border-gold/30 p-1 bg-dark-card" 
+                         src="https://drive.google.com/uc?export=view&id=1LFYbCI1A83jrD4OA9NyuANANMmyZeePL" 
+                         alt="Chatimgrafika Logo" 
+                         onerror="this.outerHTML='<span class=\'font-serif text-xl md:text-2xl font-bold gold-gradient-text tracking-wider\'>Chatimgrafika</span>'">
+                    <span class="ml-3 font-serif text-lg md:text-xl font-bold text-white tracking-wide">
+                        Chatim<span class="text-gold">grafika</span>
+                    </span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="switchTab('beranda')" class="nav-btn text-gray-300 hover:text-gold transition-colors text-sm font-medium tracking-wide uppercase" data-target="beranda">Beranda</button>
+                    <button onclick="switchTab('pemesanan')" class="nav-btn text-gray-300 hover:text-gold transition-colors text-sm font-medium tracking-wide uppercase" data-target="pemesanan">Pesan Sekarang</button>
+                    <button onclick="switchTab('dashboard')" class="nav-btn flex items-center gap-2 text-dark-bg bg-gold hover:bg-gold-light px-5 py-2.5 rounded-none border border-gold transition-all duration-300 text-sm font-semibold tracking-wide uppercase shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:shadow-[0_0_20px_rgba(212,175,55,0.6)]" data-target="dashboard">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom Navigation (App-like View) -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full glass-nav border-t border-gold/20 z-50 px-2 py-1 flex justify-around items-center">
+        <button onclick="switchTab('beranda')" class="nav-btn-mobile flex flex-col items-center justify-center w-full py-2 text-gold transition-colors" data-target="beranda">
+            <i data-lucide="home" class="w-5 h-5 mb-1"></i>
+            <span class="text-[10px] font-medium uppercase tracking-wider">Beranda</span>
+        </button>
+        <button onclick="switchTab('pemesanan')" class="nav-btn-mobile flex flex-col items-center justify-center w-full py-2 text-gray-400 hover:text-gold transition-colors relative" data-target="pemesanan">
+            <div class="absolute -top-5 bg-gold text-dark-bg rounded-full p-3 shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                <i data-lucide="plus" class="w-6 h-6"></i>
+            </div>
+            <span class="text-[10px] font-medium uppercase tracking-wider mt-5">Pesan</span>
+        </button>
+        <button onclick="switchTab('dashboard')" class="nav-btn-mobile flex flex-col items-center justify-center w-full py-2 text-gray-400 hover:text-gold transition-colors" data-target="dashboard">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 mb-1"></i>
+            <span class="text-[10px] font-medium uppercase tracking-wider">Dashboard</span>
+        </button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-16 md:pt-20">
+        
+        <!-- ================= BERANDA SECTION ================= -->
+        <section id="beranda" class="section-tab active">
+            <!-- Hero -->
+            <div class="relative bg-dark-bg overflow-hidden min-h-[90svh] md:min-h-[85vh] flex items-center pb-10 md:pb-0">
+                <div class="absolute inset-0 z-0">
+                    <div class="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-gold/10 rounded-full blur-[80px] md:blur-[100px] opacity-50 translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-gold/5 rounded-full blur-[100px] md:blur-[120px] opacity-30 -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] pointer-events-none"></div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10 w-full animate-slide-up mt-10 md:mt-0">
+                    <div class="text-center max-w-4xl mx-auto">
+                        <span class="text-gold tracking-[0.2em] text-xs md:text-sm font-semibold uppercase mb-3 block">Solusi Dokumen Premium</span>
+                        <h1 class="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-white mb-4 md:mb-6 leading-tight">
+                            Kualitas Cetak <br/>
+                            <span class="gold-gradient-text italic">Tanpa Kompromi.</span>
+                        </h1>
+                        <p class="mt-3 md:mt-4 text-base md:text-xl text-gray-400 mb-8 md:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-2">
+                            Chatimgrafika menghadirkan layanan cetak, scan, dan fotocopy dengan presisi tinggi. Dedikasi kami pada detail memastikan setiap dokumen Anda tampil sempurna.
+                        </p>
+                        <div class="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 px-4 sm:px-0">
+                            <button onclick="switchTab('pemesanan')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-gold text-dark-bg font-bold tracking-wide uppercase text-sm hover:bg-gold-light transition-all shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] transform hover:-translate-y-1">
+                                Mulai Pesanan
+                            </button>
+                            <button onclick="switchTab('dashboard')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-transparent border border-gold/50 text-gold hover:bg-gold/10 font-bold tracking-wide uppercase text-sm transition-all transform hover:-translate-y-1">
+                                Cek Status
+                            </button>
+                        </div>
+
+                        <!-- QRIS Section -->
+                        <div class="mt-12 md:mt-14 flex flex-col items-center animate-slide-up" style="animation-delay: 0.3s;">
+                            <p class="text-[10px] md:text-xs text-gold uppercase tracking-[0.2em] font-semibold mb-3 border-b border-gold/30 pb-2">Metode Pembayaran</p>
+                            <div class="bg-white p-2 rounded-lg shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all">
+                                <!-- Ganti src ini dengan link gambar QRIS asli Anda -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=QRIS_MOCK_CHATIMGRAFIKA" alt="QRIS Chatimgrafika" class="w-24 h-24 md:w-28 md:h-28 object-contain">
+                            </div>
+                            <p class="text-[9px] md:text-[10px] text-gray-400 mt-3 uppercase tracking-widest">Scan QRIS untuk Membayar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services -->
+            <div class="py-16 md:py-24 bg-dark-card border-t border-dark-border relative z-10">
+                <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                    <div class="text-center mb-10 md:mb-16">
+                        <h2 class="text-2xl md:text-4xl font-serif font-bold text-white mb-3">Layanan Unggulan Kami</h2>
+                        <div class="h-1 w-16 md:w-20 bg-gold mx-auto"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                        <div class="bg-dark-bg p-6 md:p-8 border border-dark-border hover:border-gold/50 transition-all duration-300 group hover:-translate-y-2">
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-dark-card border border-gold/30 rounded-full flex items-center justify-center mb-5 md:mb-6 group-hover:bg-gold/10 transition-colors">
+                                <i data-lucide="printer" class="text-gold w-5 h-5 md:w-6 md:h-6"></i>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2 font-serif">Cetak & Print Lembaran</h3>
+                            <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-5">Pencetakan dokumen warna dan hitam putih dengan resolusi tinggi. Tersedia berbagai pilihan kertas premium (HVS, Art Carton, dll).</p>
+                            <a href="#" onclick="switchTab('pemesanan')" class="text-gold text-xs md:text-sm font-semibold uppercase tracking-wider flex items-center gap-2 group-hover:gap-3 transition-all">Pesan <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+                        
+                        <div class="bg-dark-bg p-6 md:p-8 border border-dark-border hover:border-gold/50 transition-all duration-300 group hover:-translate-y-2">
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-dark-card border border-gold/30 rounded-full flex items-center justify-center mb-5 md:mb-6 group-hover:bg-gold/10 transition-colors">
+                                <i data-lucide="scan" class="text-gold w-5 h-5 md:w-6 md:h-6"></i>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2 font-serif">Scan Dokumen</h3>
+                            <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-5">Digitalisasi dokumen penting Anda menjadi PDF/JPG dengan kejernihan maksimal dan pengaturan kontras profesional.</p>
+                            <a href="#" onclick="switchTab('pemesanan')" class="text-gold text-xs md:text-sm font-semibold uppercase tracking-wider flex items-center gap-2 group-hover:gap-3 transition-all">Pesan <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+
+                        <div class="bg-dark-bg p-6 md:p-8 border border-dark-border hover:border-gold/50 transition-all duration-300 group hover:-translate-y-2">
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-dark-card border border-gold/30 rounded-full flex items-center justify-center mb-5 md:mb-6 group-hover:bg-gold/10 transition-colors">
+                                <i data-lucide="copy" class="text-gold w-5 h-5 md:w-6 md:h-6"></i>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2 font-serif">Fotocopy Presisi</h3>
+                            <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-5">Layanan penggandaan dokumen skala kecil hingga besar dengan hasil pekat, bersih, dan rapi sesuai dokumen asli.</p>
+                            <a href="#" onclick="switchTab('pemesanan')" class="text-gold text-xs md:text-sm font-semibold uppercase tracking-wider flex items-center gap-2 group-hover:gap-3 transition-all">Pesan <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PEMESANAN SECTION ================= -->
+        <section id="pemesanan" class="section-tab py-10 md:py-12">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-8 md:mb-10">
+                    <h2 class="text-2xl md:text-4xl font-serif font-bold text-white mb-2">Buat Pesanan Baru</h2>
+                    <p class="text-gray-400 text-sm md:text-base">Isi detail pesanan Anda, kami akan segera memprosesnya.</p>
+                </div>
+
+                <!-- Pesan Layanan Tutup -->
+                <div id="closedMessage" class="hidden text-center py-12 px-5 md:py-16 bg-dark-card border border-red-500/30 shadow-2xl relative overflow-hidden mb-8 w-full">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-900 via-red-500 to-red-900"></div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-5">
+                        <i data-lucide="lock" class="w-8 h-8 md:w-10 md:h-10 text-red-500"></i>
+                    </div>
+                    <h3 class="text-xl md:text-3xl font-serif font-bold text-white mb-2">Layanan Sedang Ditutup</h3>
+                    <p class="text-gray-400 text-sm md:text-base max-w-md mx-auto">Mohon maaf, penerimaan pesanan baru saat ini ditutup sesuai dengan jadwal operasional kami. Silakan kembali lagi nanti.</p>
+                </div>
+
+                <!-- Container Form -->
+                <div id="formContainer" class="bg-dark-card border border-dark-border p-5 md:p-10 shadow-2xl relative overflow-hidden w-full">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold-dark via-gold to-gold-dark"></div>
+                    
+                    <form id="orderForm" class="space-y-6 md:space-y-8">
+                        
+                        <!-- Informasi Kontak -->
+                        <div>
+                            <h3 class="text-gold font-serif text-base md:text-lg mb-3 border-b border-dark-border pb-2">Informasi Kontak</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs md:text-sm font-medium text-gray-300 uppercase tracking-wide">Nama / Costumer</label>
+                                    <input type="text" id="costumer" class="w-full bg-dark-bg border border-dark-border text-white text-sm md:text-base px-4 py-3 md:py-3 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors placeholder-gray-600" required>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-xs md:text-sm font-medium text-gray-300 uppercase tracking-wide">Nomor WhatsApp</label>
+                                    <input type="tel" id="whatsapp" value="+62" placeholder="+62..." class="w-full bg-dark-bg border border-dark-border text-white text-sm md:text-base px-4 py-3 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors placeholder-gray-600" required>
+                                </div>
+                                <div class="space-y-1.5 md:col-span-2">
+                                    <label class="text-xs md:text-sm font-medium text-gray-300 uppercase tracking-wide">Email</label>
+                                    <input type="email" id="email" class="w-full bg-dark-bg border border-dark-border text-white text-sm md:text-base px-4 py-3 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors placeholder-gray-600">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kebutuhan Layanan -->
+                        <div>
+                            <h3 class="text-gold font-serif text-base md:text-lg mb-3 border-b border-dark-border pb-2 flex flex-col md:flex-row md:items-baseline gap-1">
+                                Kebutuhan Layanan 
+                                <span class="text-[10px] md:text-xs text-gray-500 lowercase font-sans">(isi jumlah lembar/item)</span>
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">Print Warna</label>
+                                    <input type="number" id="printW" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 md:py-2 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">Print H/P</label>
+                                    <input type="number" id="printHP" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">Jilid</label>
+                                    <input type="number" id="jilid" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">Scan</label>
+                                    <input type="number" id="scan" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">Foto</label>
+                                    <input type="number" id="foto" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">FC Warna</label>
+                                    <input type="number" id="fcW" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] md:text-xs font-medium text-gray-400 uppercase tracking-wide">FC H/P</label>
+                                    <input type="number" id="fcHP" min="0" placeholder="0" class="w-full bg-dark-bg border border-dark-border text-white text-sm px-3 py-2.5 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-center">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- File & Catatan -->
+                        <div>
+                            <h3 class="text-gold font-serif text-base md:text-lg mb-3 border-b border-dark-border pb-2">Dokumen & Catatan</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs md:text-sm font-medium text-gray-300 uppercase tracking-wide">Unggah File (Opsional)</label>
+                                    <div class="relative border border-dashed border-dark-border bg-dark-bg hover:border-gold/50 transition-colors group cursor-pointer h-24 md:h-[116px]">
+                                        <input type="file" id="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                        <div class="h-full flex flex-col items-center justify-center gap-1 md:gap-2 text-gray-400 group-hover:text-gold transition-colors px-4">
+                                            <i data-lucide="upload-cloud" class="w-5 h-5 md:w-6 md:h-6"></i>
+                                            <span id="fileNameDisplay" class="text-xs md:text-sm truncate text-center w-full px-1">Pilih Dokumen PDF/Docx</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <label class="text-xs md:text-sm font-medium text-gray-300 uppercase tracking-wide">Catatan Tambahan</label>
+                                    <textarea id="notes" rows="3" placeholder="Instruksi khusus, ukuran margin, dll." class="w-full bg-dark-bg border border-dark-border text-white text-sm md:text-base px-4 py-3 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors placeholder-gray-600 md:h-[116px] resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 md:pt-4">
+                            <button type="submit" id="submitBtn" class="w-full bg-gold hover:bg-gold-light text-dark-bg font-bold py-3.5 md:py-4 uppercase tracking-widest text-sm transition-all duration-300 flex justify-center items-center gap-2 shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i data-lucide="check-circle" class="w-4 h-4 md:w-5 md:h-5"></i>
+                                Konfirmasi Pesanan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DASHBOARD SECTION ================= -->
+        <section id="dashboard" class="section-tab py-10 md:py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-10 gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-serif font-bold text-white">Dashboard Pelanggan</h2>
+                        <p class="text-gray-400 text-sm md:text-base mt-1">Pantau status pesanan Chatimgrafika Anda secara real-time.</p>
+                    </div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button onclick="fetchOrders()" class="flex-1 md:flex-none justify-center bg-dark-card hover:bg-dark-border border border-gold/30 px-3 py-2 flex items-center gap-2 transition-colors text-white text-xs md:text-sm rounded-md md:rounded-none">
+                            <i data-lucide="refresh-cw" id="refreshIcon" class="w-4 h-4 text-gold"></i> Refresh
+                        </button>
+                        <div class="bg-dark-card border border-gold/30 px-4 py-2 rounded-md md:rounded-full flex items-center justify-center gap-2 flex-1 md:flex-none">
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                            <span class="text-xs md:text-sm text-gold font-medium">Sistem Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-10">
+                    <div class="bg-dark-card p-4 md:p-6 border border-dark-border relative overflow-hidden col-span-2 md:col-span-1 rounded-md md:rounded-none">
+                        <i data-lucide="shopping-bag" class="absolute -right-4 -bottom-4 w-16 h-16 md:w-24 md:h-24 text-dark-bg opacity-50"></i>
+                        <h4 class="text-gray-400 text-[10px] md:text-sm uppercase tracking-wider mb-1">Total Pesanan</h4>
+                        <p class="text-3xl md:text-4xl font-serif text-white flex items-center gap-2" id="stat-total">
+                            <i data-lucide="loader" class="w-5 h-5 md:w-6 md:h-6 animate-spin text-gray-500 loading-icon"></i> <span class="stat-number">0</span>
+                        </p>
+                    </div>
+                    <div class="bg-dark-card p-4 md:p-6 border border-dark-border relative overflow-hidden border-b-2 border-b-yellow-500 rounded-md md:rounded-none">
+                        <i data-lucide="loader" class="absolute -right-2 -bottom-2 w-12 h-12 md:w-24 md:h-24 text-dark-bg opacity-50"></i>
+                        <h4 class="text-gray-400 text-[10px] md:text-sm uppercase tracking-wider mb-1">Diproses</h4>
+                        <p class="text-2xl md:text-4xl font-serif text-yellow-500 flex items-center gap-2" id="stat-proses">
+                             <i data-lucide="loader" class="w-4 h-4 md:w-6 md:h-6 animate-spin text-gray-500 loading-icon"></i> <span class="stat-number">0</span>
+                        </p>
+                    </div>
+                    <div class="bg-dark-card p-4 md:p-6 border border-dark-border relative overflow-hidden border-b-2 border-b-green-500 rounded-md md:rounded-none">
+                        <i data-lucide="check-square" class="absolute -right-2 -bottom-2 w-12 h-12 md:w-24 md:h-24 text-dark-bg opacity-50"></i>
+                        <h4 class="text-gray-400 text-[10px] md:text-sm uppercase tracking-wider mb-1">Selesai</h4>
+                        <p class="text-2xl md:text-4xl font-serif text-green-500 flex items-center gap-2" id="stat-selesai">
+                             <i data-lucide="loader" class="w-4 h-4 md:w-6 md:h-6 animate-spin text-gray-500 loading-icon"></i> <span class="stat-number">0</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Table Container (Responsive Card View for Mobile) -->
+                <div class="bg-dark-card border border-dark-border overflow-hidden w-full rounded-md md:rounded-none">
+                    <div class="px-4 md:px-6 py-3 md:py-4 border-b border-dark-border bg-dark-bg/50 flex justify-between items-center">
+                        <h3 class="text-base md:text-lg font-serif font-semibold text-white">Riwayat Pesanan</h3>
+                        <button onclick="switchTab('pemesanan')" class="text-[10px] md:text-xs text-gold hover:text-white uppercase tracking-wider font-medium flex items-center gap-1 transition-colors whitespace-nowrap bg-gold/10 px-2 py-1 rounded-md md:bg-transparent md:p-0">
+                            <i data-lucide="plus" class="w-3 h-3 md:w-3 md:h-3"></i> Pesan Baru
+                        </button>
+                    </div>
+                    
+                    <div class="relative w-full min-h-[150px] md:min-h-[200px]">
+                        <!-- Loading Overlay -->
+                        <div id="tableLoader" class="absolute inset-0 bg-dark-card/90 flex items-center justify-center z-10 w-full h-full">
+                            <div class="flex flex-col items-center">
+                                <i data-lucide="loader" class="w-6 h-6 md:w-8 md:h-8 text-gold animate-spin mb-2"></i>
+                                <span class="text-xs md:text-sm text-gray-400">Memuat data...</span>
+                            </div>
+                        </div>
+
+                        <table class="w-full text-left text-sm text-gray-400 block md:table">
+                            <thead class="hidden md:table-header-group text-xs text-gray-300 uppercase bg-dark-bg/80 border-b border-dark-border">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 font-medium tracking-wider">ID & Tanggal</th>
+                                    <th scope="col" class="px-6 py-4 font-medium tracking-wider">Pelanggan</th>
+                                    <th scope="col" class="px-6 py-4 font-medium tracking-wider">Detail Layanan</th>
+                                    <th scope="col" class="px-6 py-4 font-medium tracking-wider">Total / Status</th>
+                                    <th scope="col" class="px-6 py-4 font-medium tracking-wider text-center">File</th>
+                                </tr>
+                            </thead>
+                            <!-- The JS will populate this with mobile-friendly flex classes -->
+                            <tbody id="orderTableBody" class="block md:table-row-group divide-y divide-dark-border md:divide-y-0">
+                                <!-- Data will be populated here via App Script -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-card border-t border-dark-border py-6 md:py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-serif text-base md:text-lg font-bold text-white tracking-wide">
+                    Chatim<span class="text-gold">grafika</span>
+                </span>
+            </div>
+            <p class="text-xs md:text-sm text-gray-500 text-center">
+                &copy; <span id="year"></span> Chatimgrafika Premium Printing.
+            </p>
+            <div class="flex gap-4">
+                <a href="#" class="text-gray-500 hover:text-gold transition-colors"><i data-lucide="instagram" class="w-4 h-4 md:w-5 md:h-5"></i></a>
+                <a href="#" class="text-gray-500 hover:text-gold transition-colors"><i data-lucide="message-circle" class="w-4 h-4 md:w-5 md:h-5"></i></a>
+                <a href="#" class="text-gray-500 hover:text-gold transition-colors"><i data-lucide="mail" class="w-4 h-4 md:w-5 md:h-5"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast (Fixed position above bottom nav on mobile) -->
+    <div id="toast" class="fixed bottom-20 md:bottom-5 left-4 right-4 md:left-auto md:right-5 z-[60] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-dark-card border border-gold shadow-[0_0_20px_rgba(212,175,55,0.4)] p-3 md:p-4 flex items-center gap-3 w-full md:min-w-[300px] rounded-lg">
+            <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="check" class="w-3.5 h-3.5 md:w-4 md:h-4 text-gold"></i>
+            </div>
+            <div>
+                <h5 class="text-white text-xs md:text-sm font-bold font-serif" id="toast-title">Berhasil</h5>
+                <p class="text-[10px] md:text-xs text-gray-400" id="toast-msg">Pesanan berhasil dibuat!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Menu Logic (Desktop/Top) - Modified for new bottom nav
+        function closeMobileMenu() { 
+            const menu = document.getElementById('mobile-menu');
+            if(menu) menu.classList.add('hidden'); 
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.section-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+
+            // Update Desktop Nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.target === tabId) {
+                    if(tabId === 'dashboard') btn.classList.add('bg-gold-light', 'text-dark-bg');
+                    else { btn.classList.add('text-gold'); btn.classList.remove('text-gray-300'); }
+                } else {
+                    if(btn.dataset.target === 'dashboard') btn.classList.remove('bg-gold-light');
+                    else { btn.classList.remove('text-gold'); btn.classList.add('text-gray-300'); }
+                }
+            });
+
+            // Update Mobile Bottom Nav Active States
+            document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
+                if(btn.dataset.target === tabId) {
+                    if(tabId === 'pemesanan') {
+                        btn.querySelector('div').classList.add('bg-gold-light');
+                        btn.classList.add('text-gold');
+                    } else {
+                        btn.classList.add('text-gold');
+                        btn.classList.remove('text-gray-400');
+                    }
+                } else {
+                    if(btn.dataset.target === 'pemesanan') {
+                        btn.querySelector('div').classList.remove('bg-gold-light');
+                    }
+                    btn.classList.remove('text-gold');
+                    btn.classList.add('text-gray-400');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Fetch data if navigating to dashboard
+            if (tabId === 'dashboard') {
+                fetchOrders();
+            }
+        }
+
+        // File Input Handling
+        const fileInput = document.getElementById('file');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        fileInput.addEventListener('change', function(e) {
+            if(e.target.files.length > 0) {
+                fileNameDisplay.textContent = e.target.files[0].name;
+                fileNameDisplay.classList.add('text-gold');
+            } else {
+                fileNameDisplay.textContent = 'Pilih Dokumen PDF/Docx';
+                fileNameDisplay.classList.remove('text-gold');
+            }
+        });
+
+        // Pengunci Format Input WhatsApp (+62)
+        const waInput = document.getElementById('whatsapp');
+        waInput.addEventListener('input', function(e) {
+            let val = this.value.replace(/[^0-9]/g, '');
+            if (val === '' || val === '62') {
+                this.value = '+62';
+                return;
+            }
+            if (val.startsWith('0')) {
+                val = '62' + val.substring(1);
+            } else if (!val.startsWith('62')) {
+                val = '62' + val;
+            }
+            this.value = '+' + val;
+        });
+
+        // App Script Connection: FORM SUBMISSION
+        const orderForm = document.getElementById('orderForm');
+        
+        orderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnHTML = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 md:w-5 md:h-5 animate-spin"></i> Memproses...';
+            submitBtn.disabled = true;
+            lucide.createIcons();
+
+            let fileData = null;
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    fileData = {
+                        name: file.name,
+                        mimeType: file.type,
+                        data: event.target.result.split(',')[1] 
+                    };
+                    sendDataToGAS(fileData, originalBtnHTML);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                sendDataToGAS(null, originalBtnHTML);
+            }
+        });
+
+        function sendDataToGAS(fileData, originalBtnHTML) {
+            const formData = {
+                costumer: document.getElementById('costumer').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                email: document.getElementById('email').value,
+                printW: document.getElementById('printW').value || 0,
+                printHP: document.getElementById('printHP').value || 0,
+                jilid: document.getElementById('jilid').value || 0,
+                scan: document.getElementById('scan').value || 0,
+                foto: document.getElementById('foto').value || 0,
+                fcW: document.getElementById('fcW').value || 0,
+                fcHP: document.getElementById('fcHP').value || 0,
+                notes: document.getElementById('notes').value,
+                file: fileData
+            };
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(function(response) {
+                        resetForm(originalBtnHTML);
+                        showToast('Berhasil', 'Pesanan ' + response.orderId + ' masuk!');
+                        setTimeout(() => switchTab('dashboard'), 1500);
+                    })
+                    .withFailureHandler(function(error) {
+                        resetForm(originalBtnHTML);
+                        showToast('Error', 'Gagal memproses: ' + error.message, true);
+                    })
+                    .submitOrderToSheet(formData);
+            } else {
+                setTimeout(() => {
+                    resetForm(originalBtnHTML);
+                    showToast('Mode Simulasi', 'Pesanan Diterima (Offline)');
+                    setTimeout(() => switchTab('dashboard'), 1500);
+                }, 1500);
+            }
+        }
+
+        function resetForm(originalBtnHTML) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = originalBtnHTML;
+            submitBtn.disabled = false;
+            
+            const inputs = ['costumer', 'email', 'printW', 'printHP', 'jilid', 'scan', 'foto', 'fcW', 'fcHP', 'notes'];
+            inputs.forEach(id => document.getElementById(id).value = '');
+            document.getElementById('whatsapp').value = '+62';
+            fileNameDisplay.textContent = 'Pilih Dokumen PDF/Docx';
+            fileNameDisplay.classList.remove('text-gold');
+            lucide.createIcons();
+        }
+
+        // App Script Connection: FETCH DATA UNTUK DASHBOARD
+        function fetchOrders() {
+            const refreshIcon = document.getElementById('refreshIcon');
+            const tableLoader = document.getElementById('tableLoader');
+            
+            if(refreshIcon) refreshIcon.classList.add('animate-spin');
+            if(tableLoader) tableLoader.classList.remove('hidden');
+
+            document.querySelectorAll('.loading-icon').forEach(icon => icon.classList.remove('hidden'));
+            document.querySelectorAll('.stat-number').forEach(num => num.classList.add('hidden'));
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(renderDashboard)
+                    .withFailureHandler(function(err){
+                        alert("Gagal mengambil data: " + err.message);
+                        if(refreshIcon) refreshIcon.classList.remove('animate-spin');
+                        if(tableLoader) tableLoader.classList.add('hidden');
+                    })
+                    .getOrdersFromSheet();
+            } else {
+                setTimeout(() => {
+                    renderDashboard([
+                        { 
+                            orderId: '858b987e', date: '13/01/2025 12.17', 
+                            costumer: 'Ust. Salim Dzul Amin', email: '', whatsapp: '+6281234567890', 
+                            printW: '', printHP: '570', jilid: '15', scan: '2', foto: '', fcW: '', fcHP: '', 
+                            total: '352,217', riyal: '81', status: 'Lunas', kirim: 'Belum Terkirim',
+                            file: 'ada' 
+                        }
+                    ]);
+                }, 1000);
+            }
+        }
+
+        function renderDashboard(orders) {
+            const tbody = document.getElementById('orderTableBody');
+            tbody.innerHTML = '';
+            
+            let total = orders.length;
+            let diproses = 0;
+            let selesai = 0;
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr class="block md:table-row"><td colspan="5" class="block md:table-cell px-6 py-8 text-center text-gray-500">Belum ada pesanan ditemukan.</td></tr>`;
+            } else {
+                orders.forEach(order => {
+                    const statusLower = (order.status || '').toLowerCase();
+                    if (statusLower.includes('lunas') || statusLower.includes('selesai')) selesai++;
+                    else diproses++;
+
+                    let statusHtml = '';
+                    if (statusLower.includes('lunas') || statusLower.includes('selesai')) {
+                        statusHtml = `<span class="px-2.5 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded-md md:rounded-full text-[10px] md:text-xs font-medium whitespace-nowrap">${order.status}</span>`;
+                    } else {
+                        statusHtml = `<span class="px-2.5 py-1 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 rounded-md md:rounded-full text-[10px] md:text-xs font-medium whitespace-nowrap">${order.status || 'Pending'}</span>`;
+                    }
+
+                    let maskedWa = '-';
+                    if (order.whatsapp && order.whatsapp.length > 5) {
+                        let waStr = order.whatsapp.toString();
+                        if(!waStr.startsWith('+')) waStr = '+' + waStr; 
+                        let firstPart = waStr.substring(0, 5); 
+                        let lastPart = waStr.substring(waStr.length - 3); 
+                        let maskLength = waStr.length - firstPart.length - lastPart.length;
+                        maskedWa = maskLength > 0 ? `${firstPart}${'*'.repeat(maskLength)}${lastPart}` : waStr;
+                    } else if (order.whatsapp) {
+                        maskedWa = order.whatsapp;
+                    }
+
+                    let services = [];
+                    if(order.printW > 0) services.push(`Pr.Warna: ${order.printW}`);
+                    if(order.printHP > 0) services.push(`Pr.H/P: ${order.printHP}`);
+                    if(order.jilid > 0) services.push(`Jilid: ${order.jilid}`);
+                    if(order.scan > 0) services.push(`Scan: ${order.scan}`);
+                    if(order.foto > 0) services.push(`Foto: ${order.foto}`);
+                    if(order.fcW > 0) services.push(`FC.Warna: ${order.fcW}`);
+                    if(order.fcHP > 0) services.push(`FC.H/P: ${order.fcHP}`);
+                    let serviceString = services.length > 0 ? services.join(', ') : 'Hanya Catatan';
+
+                    let fileActionHtml = '';
+                    if (order.file && order.file !== '-' && order.file.trim() !== '') {
+                        fileActionHtml = `<div class="text-gold flex justify-end md:justify-center" title="Dokumen Tersedia"><i data-lucide="file-check" class="w-5 h-5 md:w-5 md:h-5"></i></div>`;
+                    } else {
+                        fileActionHtml = `<div class="text-gray-600 flex justify-end md:justify-center" title="Tidak Ada Dokumen"><i data-lucide="file-x" class="w-5 h-5 md:w-5 md:h-5"></i></div>`;
+                    }
+
+                    // TABLE CARD RESPONSIVE LOGIC
+                    const tr = document.createElement('tr');
+                    tr.className = 'block md:table-row hover:bg-dark-bg/50 transition-colors border-b border-dark-border md:border-b-dark-border/50 p-4 md:p-0 bg-dark-card md:bg-transparent mb-3 md:mb-0 rounded-lg md:rounded-none shadow-lg md:shadow-none';
+                    
+                    tr.innerHTML = `
+                        <td class="block md:table-cell px-0 md:px-6 py-1 md:py-4">
+                            <div class="flex justify-between md:block items-center">
+                                <span class="md:hidden text-[10px] text-gray-500 uppercase font-semibold">ID & Waktu</span>
+                                <div class="text-right md:text-left">
+                                    <div class="font-mono text-gold text-sm md:text-base mb-0.5">#${order.orderId.substring(0,8)}</div>
+                                    <div class="text-[10px] md:text-xs text-gray-500">${order.date}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="block md:table-cell px-0 md:px-6 py-1 md:py-4 border-t border-dark-border/30 md:border-none mt-2 pt-2 md:mt-0 md:pt-4">
+                            <div class="flex flex-col md:block items-start">
+                                <span class="md:hidden text-[10px] text-gray-500 uppercase font-semibold mb-1">Pelanggan</span>
+                                <div class="text-left w-full">
+                                    <div class="text-white font-medium text-sm md:text-base">${order.costumer}</div>
+                                    <div class="text-xs text-gray-400">WA: ${maskedWa}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="block md:table-cell px-0 md:px-6 py-1 md:py-4 border-t border-dark-border/30 md:border-none mt-2 pt-2 md:mt-0 md:pt-4">
+                            <div class="flex flex-col md:block items-start">
+                                <span class="md:hidden text-[10px] text-gray-500 uppercase font-semibold mb-1">Detail Layanan</span>
+                                <div class="text-gray-300 text-xs leading-relaxed md:max-w-[200px] md:truncate text-left w-full" title="${serviceString}">${serviceString}</div>
+                            </div>
+                        </td>
+                        <td class="block md:table-cell px-0 md:px-6 py-2 md:py-4 border-t border-dark-border/50 md:border-none mt-3 pt-3 md:mt-0 md:pt-4">
+                            <div class="flex justify-between items-center w-full md:block">
+                                <div class="text-white font-medium text-sm md:text-base whitespace-nowrap md:mb-1">Rp ${order.total || '0'} <span class="text-[10px] md:text-xs text-gold ml-1">(${order.riyal || '0'} SAR)</span></div>
+                                <div class="text-right md:text-left">${statusHtml}</div>
+                            </div>
+                        </td>
+                        <td class="absolute top-4 right-4 md:relative md:top-0 md:right-0 block md:table-cell px-0 md:px-6 py-0 md:py-4">
+                            <div class="flex md:block justify-end w-full">
+                                ${fileActionHtml}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Update Stats UI
+            document.querySelectorAll('.loading-icon').forEach(icon => icon.classList.add('hidden'));
+            
+            const numTotal = document.querySelector('#stat-total .stat-number');
+            const numProses = document.querySelector('#stat-proses .stat-number');
+            const numSelesai = document.querySelector('#stat-selesai .stat-number');
+            
+            numTotal.textContent = total;
+            numProses.textContent = diproses;
+            numSelesai.textContent = selesai;
+            
+            numTotal.classList.remove('hidden');
+            numProses.classList.remove('hidden');
+            numSelesai.classList.remove('hidden');
+
+            const tableLoader = document.getElementById('tableLoader');
+            if(tableLoader) tableLoader.classList.add('hidden');
+            
+            const refreshIcon = document.getElementById('refreshIcon');
+            if(refreshIcon) refreshIcon.classList.remove('animate-spin');
+            
+            lucide.createIcons();
+        }
+
+        // Toast Notification
+        function showToast(title, message, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = message;
+            
+            if(isError) {
+                toast.querySelector('.bg-gold\\/20').classList.replace('bg-gold/20', 'bg-red-500/20');
+                toast.querySelector('i').setAttribute('data-lucide', 'x');
+                toast.querySelector('i').classList.replace('text-gold', 'text-red-500');
+            } else {
+                toast.querySelector('.bg-red-500\\/20')?.classList.replace('bg-red-500/20', 'bg-gold/20');
+                toast.querySelector('i').setAttribute('data-lucide', 'check');
+                toast.querySelector('i').classList.replace('text-red-500', 'text-gold');
+            }
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 4000);
+        }
+
+        // Cek Status Toko (Buka/Tutup)
+        function checkStoreStatus() {
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run
+                    .withSuccessHandler(function(isOpen) {
+                        toggleStoreStatus(isOpen);
+                    })
+                    .withFailureHandler(function() {
+                        toggleStoreStatus(true); 
+                    })
+                    .getStoreStatus();
+            } else {
+                toggleStoreStatus(true); 
+            }
+        }
+
+        function toggleStoreStatus(isOpen) {
+            const formContainer = document.getElementById('formContainer');
+            const closedMessage = document.getElementById('closedMessage');
+            
+            if (formContainer && closedMessage) {
+                if(isOpen) {
+                    formContainer.classList.remove('hidden');
+                    closedMessage.classList.add('hidden');
+                } else {
+                    formContainer.classList.add('hidden');
+                    closedMessage.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Init
+        checkStoreStatus();
+        switchTab('beranda');
+    </script>
+</body>
+</html>
