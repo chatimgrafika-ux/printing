@@ -454,6 +454,11 @@
 
     <!-- Application Logic -->
     <script>
+        // === KONFIGURASI GITHUB PAGES ===
+        // Wajib diisi dengan URL Aplikasi Web (Web App URL) dari Google Apps Script Anda
+        const APPS_SCRIPT_URL = ""; 
+        // ================================
+
         // Initialize Lucide Icons
         lucide.createIcons();
         document.getElementById('year').textContent = new Date().getFullYear();
@@ -499,6 +504,7 @@
                     btn.classList.add('text-gray-400');
                 }
             });
+            const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwD1OxX9WunZCEp-vo7wOUPtJ9C5RR3ilAYePTzzpGOB8Z2XwmPrNXuRX-nTfAJ8Eu/exec";
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -584,22 +590,30 @@
                 file: fileData
             };
 
-            if (typeof google !== 'undefined' && google.script && google.script.run) {
-                google.script.run
-                    .withSuccessHandler(function(response) {
-                        resetForm(originalBtnHTML);
-                        showToast('Berhasil', 'Pesanan ' + response.orderId + ' masuk!');
-                        setTimeout(() => switchTab('dashboard'), 1500);
-                    })
-                    .withFailureHandler(function(error) {
-                        resetForm(originalBtnHTML);
-                        showToast('Error', 'Gagal memproses: ' + error.message, true);
-                    })
-                    .submitOrderToSheet(formData);
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== "") {
+                fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify({ action: 'submitOrder', data: formData }),
+                    redirect: 'follow'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    resetForm(originalBtnHTML);
+                    showToast('Berhasil', 'Pesanan ' + data.orderId + ' masuk!');
+                    setTimeout(() => switchTab('dashboard'), 1500);
+                })
+                .catch(error => {
+                    resetForm(originalBtnHTML);
+                    showToast('Error', 'Gagal memproses ke server', true);
+                });
             } else {
+                // Mode Simulasi (Jika URL APPS_SCRIPT belum diisi)
                 setTimeout(() => {
                     resetForm(originalBtnHTML);
-                    showToast('Mode Simulasi', 'Pesanan Diterima (Offline)');
+                    showToast('Mode Simulasi', 'Pesanan Diterima (Harap isi URL App Script)');
                     setTimeout(() => switchTab('dashboard'), 1500);
                 }, 1500);
             }
@@ -629,16 +643,17 @@
             document.querySelectorAll('.loading-icon').forEach(icon => icon.classList.remove('hidden'));
             document.querySelectorAll('.stat-number').forEach(num => num.classList.add('hidden'));
 
-            if (typeof google !== 'undefined' && google.script && google.script.run) {
-                google.script.run
-                    .withSuccessHandler(renderDashboard)
-                    .withFailureHandler(function(err){
-                        alert("Gagal mengambil data: " + err.message);
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== "") {
+                fetch(APPS_SCRIPT_URL + '?action=getOrders')
+                    .then(response => response.json())
+                    .then(data => renderDashboard(data))
+                    .catch(err => {
+                        alert("Gagal mengambil data dari server");
                         if(refreshIcon) refreshIcon.classList.remove('animate-spin');
                         if(tableLoader) tableLoader.classList.add('hidden');
-                    })
-                    .getOrdersFromSheet();
+                    });
             } else {
+                // Mode Simulasi (Jika URL APPS_SCRIPT belum diisi)
                 setTimeout(() => {
                     renderDashboard([
                         { 
@@ -797,15 +812,11 @@
 
         // Cek Status Toko (Buka/Tutup)
         function checkStoreStatus() {
-            if (typeof google !== 'undefined' && google.script && google.script.run) {
-                google.script.run
-                    .withSuccessHandler(function(isOpen) {
-                        toggleStoreStatus(isOpen);
-                    })
-                    .withFailureHandler(function() {
-                        toggleStoreStatus(true); 
-                    })
-                    .getStoreStatus();
+            if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== "") {
+                fetch(APPS_SCRIPT_URL + '?action=getStatus')
+                    .then(response => response.json())
+                    .then(data => toggleStoreStatus(data.isOpen))
+                    .catch(err => toggleStoreStatus(true));
             } else {
                 toggleStoreStatus(true); 
             }
